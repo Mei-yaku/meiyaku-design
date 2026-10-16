@@ -974,9 +974,13 @@ video {
           background-clip: text;
 }
 
-.object-cover {
-  -o-object-fit: cover;
-     object-fit: cover;
+.h-auto {
+  height: auto;
+}
+
+.object-contain {
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 
 .p-1 {
@@ -1354,6 +1358,39 @@ html{
   scrollbar-width:none
 }
 
+.skip-link{
+  position:fixed;
+  left:1rem;
+  top:1rem;
+  z-index:50;
+  transform:translateY(-200%);
+  border-radius:.75rem;
+  padding:.75rem 1rem;
+  background:#fff;
+  color:#161515;
+  font-weight:600
+}
+
+.skip-link:focus{
+  transform:none
+}
+
+@media(max-width:639px){
+  .nav-shell{
+    padding:.75rem
+  }
+
+  .nav-links{
+    gap:.25rem
+  }
+
+  .nav-links a{
+    padding-inline:.75rem;
+    font-size:.75rem;
+    white-space:nowrap
+  }
+}
+
 details>summary::-webkit-details-marker{
   display:none
 }
@@ -1580,26 +1617,6 @@ details>summary::-webkit-details-marker{
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;
   mask-composite:exclude
-}
-
-html.lenis,html.lenis body{
-  height:auto
-}
-
-.lenis.lenis-smooth{
-  scroll-behavior:auto!important
-}
-
-.lenis.lenis-smooth [data-lenis-prevent]{
-  overscroll-behavior:contain
-}
-
-.lenis.lenis-stopped{
-  overflow:hidden
-}
-
-.lenis.lenis-smooth iframe{
-  pointer-events:none
 }
 
 @media (prefers-reduced-motion:reduce){

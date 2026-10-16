@@ -1,15 +1,8 @@
-/* Meiyaku Design: site behaviour (smooth scroll, reveals, carousels, FAQ, footer reveal). Needs lenis.min.js loaded first. */
+/* Meiyaku Design: site behaviour (smooth scroll, reveals, carousels, FAQ, footer reveal). */
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const behavior = reduce ? 'auto' : 'smooth';
 
-  // Smooth scrolling (Lenis). Touch devices keep native momentum; skipped for reduced motion.
-  let lenis = null;
-  if (window.Lenis && !reduce) {
-    lenis = new Lenis({ lerp: 0.09 });
-    const loop = t => { lenis.raf(t); requestAnimationFrame(loop); };
-    requestAnimationFrame(loop);
-  }
   // In-page links glide to their target (the footer link goes to the end of the page)
   document.addEventListener('click', e => {
     const a = e.target.closest('a[href^="#"]');
@@ -18,7 +11,7 @@
     if (id.length > 1 && !el) return;
     e.preventDefault();
     const y = !el ? 0 : el.classList.contains('site-footer') ? document.documentElement.scrollHeight - innerHeight : el.getBoundingClientRect().top + scrollY - 72;
-    if (lenis) lenis.scrollTo(y); else scrollTo({ top: y, behavior });
+    scrollTo({ top: y, behavior });
   });
 
   // Reveal on scroll: stop observing once revealed
@@ -30,6 +23,7 @@
   document.querySelectorAll('.carousel-article').forEach(article => {
     const slider = article.querySelector('.slider-container');
     const slides = [...slider.children];
+    const projectName = article.querySelector('h2')?.textContent.trim();
 
     // Active slide = the one crossing the centre band. No scroll handler, no layout reads.
     const io = new IntersectionObserver(entries => {
@@ -39,6 +33,10 @@
 
     // Prev / next buttons
     const step = () => slides[0].offsetWidth + (parseFloat(getComputedStyle(slider).columnGap) || 32);
+    if (projectName) {
+      article.querySelector('.carousel-prev')?.setAttribute('aria-label', `Previous ${projectName} image`);
+      article.querySelector('.carousel-next')?.setAttribute('aria-label', `Next ${projectName} image`);
+    }
     article.querySelector('.carousel-prev')?.addEventListener('click', () => slider.scrollBy({ left: -step(), behavior }));
     article.querySelector('.carousel-next')?.addEventListener('click', () => slider.scrollBy({ left: step(), behavior }));
 
@@ -98,7 +96,6 @@
     const onResize = () => { measure(); onScroll(); };
     footer.style.setProperty('--p', 0);
     measure();
-    if (lenis) lenis.on('scroll', () => { if (live) update(); });
     new IntersectionObserver(([e]) => {
       if (e.isIntersecting === live) return;
       live = e.isIntersecting;
